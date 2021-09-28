@@ -1,24 +1,34 @@
 import requests
 from bs4 import BeautifulSoup
-url="https://books.toscrape.com/catalogue/a-light-in-the-attic_1000/index.html"
+homePageUrl = "https://books.toscrape.com/catalogue/page-1.html"
+homePage = requests.get(homePageUrl)
+soup = BeautifulSoup(homePage.content, "html.parser")
+categoryList = soup.find_all("a")
+print(categoryList[-50].string)
+print(len(categoryList))
+url = "https://books.toscrape.com/catalogue/a-light-in-the-attic_1000/index.html"
 page = requests.get(url)
 soup = BeautifulSoup(page.content, "html.parser")
-availability=soup.find("p",class_="instock availability")
-price=soup.find("p",class_="price_color")
-description=soup.find_all("p")[-1]
-title=soup.find("h1")
-productInformation=soup.find("tr",class_="table table-striped")
-#productUrl=
-#upc=
-#priceIncludingTax=
-#priceExcludingTax=
-#NumberAvailable=
-#category=
-#reviewRating=
-#imageUrl=soup.find("div",class_="item active")
-#print (title.string)
-#print (price.string)
-#print(availability.string)
-#print(description.string)
-#print(imageUrl.string)
-print(productInformation)
+description = soup.find_all("p")[-1].string
+title = soup.find("h1").string
+productInformation = soup.find_all("td")
+productUrl = url
+upc = productInformation[0].string
+priceIncludingTax = productInformation[3].string
+priceExcludingTax = productInformation[2].string
+availability = productInformation[5].string
+reviewNumber = productInformation[6].string
+# NumberAvailable=
+# category =
+# reviewRating=
+imageUrl = soup.find("img")
+print("upc = "+upc)
+print("title = "+title)
+print("price excluding taxes ="+priceExcludingTax)
+print("price Including taxes ="+priceIncludingTax)
+print("availability :"+availability)
+print("number of review is :"+reviewNumber)
+print("description is:"+description)
+print("url of this product is:"+productUrl)
+print(imageUrl)
+print(imageUrl.string)
