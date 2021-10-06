@@ -1,4 +1,5 @@
 import requests
+import csv
 from bs4 import BeautifulSoup
 homePageUrl = "https://books.toscrape.com/catalogue/page-1.html"
 
@@ -34,11 +35,19 @@ def main(homeUrl):
     print(categories)
     booksUrlList = []
     number = 1
+    en_tete = ["product_page_url", "universal_product_code", "title", "price_including_tax", "price_excluding_tax",
+               "number_available", "product_description", "category", "review_rating", "image_url"]
+    with open('product.csv', "w", newline="") as file_csv:
+        writer = csv.writer(file_csv, delimiter=",")
+        writer.writerow(en_tete)
     for i in categoriesForUrl[1:]:
         url = "https://books.toscrape.com/catalogue/category/books/"+i+"/index.html"
         getBooksUrl(url, booksUrlList, i)
         for y in booksUrlList:
-            product(y, categories[number])
+            book = product(y, categories[number])
+            with open('product.csv', "a", newline="") as file_csv:
+                writer = csv.writer(file_csv, delimiter=",")
+                writer.writerow([book.product_page_url, book.universal_product_code, book.title, book.price_including_tax, book.price_excluding_tax, book.number_available, book.product_description, book.category, book.review_rating, book.image_url])
         booksUrlList = []
         number += 1
 
@@ -85,6 +94,7 @@ def product(url, category):
     # print(imageUrl.get('href'))
     # print(description[3].contents)
     book = Book(url, upc, title, priceExcludingTax, priceIncludingTax, numberAvailable, "description", category, reviewRating, "imageUrl")
+    return book
 
 
 def getBooksUrl(url, booksUrlList, category):
@@ -97,6 +107,7 @@ def getBooksUrl(url, booksUrlList, category):
         booksUrl.append(a["href"])
     del booksUrl[0:54]
     if next:
+        partUrlNext = booksUrl[-1]
         del booksUrl[-1]
     if previous:
         del booksUrl[-1]
@@ -105,10 +116,11 @@ def getBooksUrl(url, booksUrlList, category):
         if "https://books.toscrape.com/catalogue/"+i not in booksUrlList:
             booksUrlList.append("https://books.toscrape.com/catalogue/"+i)
     if next:
-        urlNext = "https://books.toscrape.com/catalogue/category/books/" + category + "/" + booksUrl[-1]
+        urlNext = "https://books.toscrape.com/catalogue/category/books/" + category + "/" + partUrlNext
         getBooksUrl(urlNext, booksUrlList, category)
 
 
-# main(homePageUrl)
-product("https://books.toscrape.com/catalogue/a-light-in-the-attic_1000/index.html", "travel")
+main(homePageUrl)
+# product("https://books.toscrape.com/catalogue/a-light-in-the-attic_1000/index.html", "travel")
 test = Book("product_page_url", "universal_product_code", "title", "price_including_tax", "price_excluding_tax", "number_available", "product_description", "category", "review_rating", "image_url")
+
