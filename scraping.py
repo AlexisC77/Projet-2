@@ -3,6 +3,20 @@ from bs4 import BeautifulSoup
 homePageUrl = "https://books.toscrape.com/catalogue/page-1.html"
 
 
+class Book:
+    def __init__(self, product_page_url, universal_product_code, title, price_including_tax, price_excluding_tax, number_available, product_description, category, review_rating, image_url):
+        self.product_page_url = product_page_url
+        self.universal_product_code = universal_product_code
+        self.title = title
+        self.price_including_tax = price_including_tax
+        self.price_excluding_tax = price_excluding_tax
+        self.number_available = number_available
+        self.product_description = product_description
+        self.category = category
+        self.review_rating = review_rating
+        self.image_url = image_url
+
+
 def main(homeUrl):
     homePage = requests.get(homeUrl)
     soupHome = BeautifulSoup(homePage.content, "html.parser")
@@ -32,7 +46,7 @@ def main(homeUrl):
 def product(url, category):
     page = requests.get(url)
     soup = BeautifulSoup(page.content, "html.parser")
-    # description = soup.find_all("div", class_=False)
+    description = soup.find_all("div", class_=False)
     title = soup.find("h1").string
     productInformation = soup.find_all("td")
     productUrl = url
@@ -40,38 +54,37 @@ def product(url, category):
     priceIncludingTax = productInformation[3].string
     priceExcludingTax = productInformation[2].string
     availability = productInformation[5].string
-    reviewNumber = productInformation[6].string
     reviewRating = soup.find("p", class_="star-rating")["class"][1]
-    # if reviewRating == "One":
-    #     reviewRating = 1
-    # elif reviewRating == "Two":
-    #     reviewRating = 2
-    # elif reviewRating == "Three":
-    #     reviewRating = 3
-    # elif reviewRating == "Four":
-    #     reviewRating = 4
-    # else:
-    #     reviewRating = 5
-    # print(reviewRating)
-    # imageUrl = soup.find("img")
-    # print("upc = " + upc)
-    # print("title = " + title)
-    # print("price excluding taxes =" + priceExcludingTax)
-    # print("price Including taxes =" + priceIncludingTax)
-    # if availability[:8] == "In stock":
-    #     numberAvailable = availability[10:-11]
-    # else:
-    #     numberAvailable = 0
-    # print(numberAvailable)
-    # print("number of review is :" + reviewNumber)
-    # print("url of this product is:" + productUrl)
-    # print(category)
+    if reviewRating == "One":
+        reviewRating = 1
+    elif reviewRating == "Two":
+        reviewRating = 2
+    elif reviewRating == "Three":
+        reviewRating = 3
+    elif reviewRating == "Four":
+        reviewRating = 4
+    else:
+        reviewRating = 5
+    print(reviewRating)
+    imageUrl = soup.find("img")
+    print("upc = " + upc)
+    print("title = " + title)
+    print("price excluding taxes =" + priceExcludingTax)
+    print("price Including taxes =" + priceIncludingTax)
+    if availability[:8] == "In stock":
+        numberAvailable = availability[10:-11]
+    else:
+        numberAvailable = 0
+    print(numberAvailable)
+    print("url of this product is:" + productUrl)
+    print(category)
     # print(description)
     # print(imageUrl)
     # print(imageUrl.string)
     # print(type(imageUrl))
     # print(imageUrl.get('href'))
     # print(description[3].contents)
+    book = Book(url, upc, title, priceExcludingTax, priceIncludingTax, numberAvailable, "description", category, reviewRating, "imageUrl")
 
 
 def getBooksUrl(url, booksUrlList, category):
@@ -98,3 +111,4 @@ def getBooksUrl(url, booksUrlList, category):
 
 # main(homePageUrl)
 product("https://books.toscrape.com/catalogue/a-light-in-the-attic_1000/index.html", "travel")
+test = Book("product_page_url", "universal_product_code", "title", "price_including_tax", "price_excluding_tax", "number_available", "product_description", "category", "review_rating", "image_url")
