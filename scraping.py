@@ -49,6 +49,7 @@ def main(homeUrl):
         booksUrlList = []
         print(categories[number]+" is done")
         number += 1
+    print("program is done you can now look at .csv")
 
 
 def product(url, category):
@@ -105,5 +106,3 @@ def getBooksUrl(url, booksUrlList, category):
 
 
 main(homePageUrl)
-# product("https://books.toscrape.com/catalogue/a-light-in-the-attic_1000/index.html", "travel")
-test = Book("product_page_url", "universal_product_code", "title", "price_including_tax", "price_excluding_tax", "number_available", "product_description", "category", "review_rating", "image_url")
