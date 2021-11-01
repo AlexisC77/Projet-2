@@ -118,7 +118,7 @@ def get_books_url(url, books_url_list, category, categories_number):
 
 
 def download_picture(url, title):
-    title = title.replace(":", ";").replace("/", "").replace("\"", "'").replace("\\", "").replace("*", "").replace("?", "")
+    title = title.replace(":", ";").replace("/", "").replace("\"", "").replace("\\", "").replace("*", "").replace("?", "").replace("’", "")
     response = requests.get(url).content
     with open(title+".jpg", "wb") as picture:
         picture.write(response)
